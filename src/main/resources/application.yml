@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: prod
+
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    password: assistant
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator

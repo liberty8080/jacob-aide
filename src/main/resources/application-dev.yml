@@ -1,0 +1,8 @@
+telegram:
+  bot:
+    token: ENC(dbfhCrk/wu1WyWQM6quQ8oZ/A8Qtw+x4xZW5coVSpSzfA+PPvb9QCjL01a1AH4PxpiX9vyKO1sk=)
+    name: ENC(no5jftJvpwTuHRGnaphpiQ+wf2zuBAWh)
+    proxy:
+      type: SOCKS5
+      host: 127.0.0.1
+      port: 10808
