@@ -4,9 +4,14 @@ plugins {
 	id 'java'
 }
 
+
+
 group = 'com.jacob'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
+
+
+
 
 configurations {
 	compileOnly {
@@ -27,6 +32,8 @@ dependencies {
 	compile "org.telegram:telegrambots-abilities:4.9.1"
 	compile group: 'org.telegram', name: 'telegrambots', version: '4.9.1'
 	compile group: 'org.telegram', name: 'telegrambots-spring-boot-starter', version: '4.9.1'
+	// 热部署（编译）
+	compile "org.springframework.boot:spring-boot-devtools"
 	// 加密配置文件
 	compile group: 'com.github.ulisesbocchio', name: 'jasypt-spring-boot-starter', version: '3.0.3'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {

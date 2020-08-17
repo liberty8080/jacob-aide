@@ -6,3 +6,7 @@ telegram:
       type: SOCKS5
       host: 127.0.0.1
       port: 10808
+
+logging:
+  level:
+    root: INFO
