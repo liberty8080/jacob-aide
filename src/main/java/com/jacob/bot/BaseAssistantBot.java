@@ -64,10 +64,12 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
      * @param update 处理子类传过来的update
      */
     public void onUpdateReceived(Update update) {
+        // TODO: 2020/8/17 让机器人以回复的形式返回结果 
         Stream.of(update)
                 .filter(this::isCommand)
                 .map(this::getContext)
                 .map(this::matchCommand)
+                .filter(this::hasCommand)
                 .forEach(ctx ->
                         ctx.getCmd().getAction().accept(ctx)
                 );
@@ -79,7 +81,6 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
     }
 
     public MessageCtx matchCommand(MessageCtx ctx) {
-        var map = new HashMap<MessageCtx, Command>();
         var receivedMsg = ctx.getUpdate().getMessage().getText().substring(1);
         for (var cmd : commands.keySet()) {
             if (cmd.equals(receivedMsg)) {
@@ -89,6 +90,16 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
             }
         }
         return ctx;
+    }
+
+    protected boolean hasCommand(MessageCtx ctx) {
+        var chatId = ctx.getChatId();
+        if (ctx.getCmd() != null) {
+            return true;
+        } else {
+            silent.send("没有匹配的命令！", chatId);
+        }
+        return ctx.getCmd() != null;
     }
 
 
