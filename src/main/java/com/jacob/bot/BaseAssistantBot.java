@@ -1,7 +1,10 @@
 package com.jacob.bot;
 
+import com.jacob.bot.annotation.NormalCommand;
 import com.jacob.bot.entities.Command;
 import com.jacob.bot.entities.MessageCtx;
+import com.jacob.bot.util.AnnotationUtil;
+import com.jacob.bot.util.Const;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -14,15 +17,19 @@ import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static com.jacob.bot.entities.Command.builder;
+import static com.jacob.bot.util.Const.COMMAND_FLAG;
 
 /**
  * 机器人基类，两个子类用于根据配置切换longPolling与webhook模式
@@ -35,14 +42,14 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
     private final String botToken;
     @Getter
     private final String botUsername;
-
+    /**
+     * 反射获得命令
+     */
+    private final Map<Class<? extends Annotation>, Set<Method>> commandsMap = registerCommandsByAnnotation();
     @Setter
     private MessageSender sender;
     @Setter
     private SilentSender silent;
-
-    //注册命令
-    private final Map<String, Command> commands = new HashMap<>();
 
 
     /**
@@ -56,7 +63,7 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
         this.botUsername = botUsername;
         sender = new DefaultSender(this);
         silent = new SilentSender(sender);
-        registerCommands();
+//        registerCommands();
     }
 
 
@@ -82,12 +89,30 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
 
     public MessageCtx matchCommand(MessageCtx ctx) {
         var receivedMsg = ctx.getUpdate().getMessage().getText().substring(1);
-        for (var cmd : commands.keySet()) {
-            if (cmd.equals(receivedMsg)) {
-                ctx.setCmd(commands.get(cmd));
-            } else {
-                log.info("no matching command");
+        for (Method method : commandsMap.get(NormalCommand.class)) {
+            String name = method.getAnnotation(NormalCommand.class).name();
+            if (receivedMsg.equals(name)) {
+                String desc = method.getAnnotation(NormalCommand.class).description();
+                if (method.getReturnType().equals(String.class)) {
+                    Command command = new Command(name, desc,
+                            messageCtx -> {
+                                try {
+                                    //通过反射调用方法,拿取返回的信息,发送给用户
+                                    Object obj = method.getDeclaringClass().getConstructor().newInstance();
+                                    silent.send((String)method.invoke(obj, messageCtx), messageCtx.getChatId());
+                                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
+                                    log.error("命令调用失败! class:{}, method:{},command:{}", method.getDeclaringClass().getSimpleName(),
+                                            method.getName(), receivedMsg);
+                                }
+                            });
+                    ctx.setCmd(command);
+                } else {
+                    // TODO: 2020/11/6 更多形式的返回
+                    log.warn("暂不支持");
+                }
+                break;
             }
+
         }
         return ctx;
     }
@@ -110,7 +135,7 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
     private boolean isCommand(Update update) {
 
         if (update.hasMessage() && update.getMessage().hasText()) {
-            if (update.getMessage().getText().startsWith("/")) {
+            if (update.getMessage().getText().startsWith(COMMAND_FLAG)) {
                 return true;
             } else {
                 silent.send("not command ", update.getMessage().getChatId());
@@ -122,24 +147,13 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
         }
     }
 
-    public Command json() {
-        return builder()
-                .name("json")
-                .Description("将接收到的update转换为JSON对象返回")
-                .action(ctx -> silent.send(new JSONObject(ctx).toString(), ctx.getChatId()))
-                .build();
-    }
 
 
-    /**
-     * 扫描返回值为的Command函数，,加入集合
-     * todo: 增强扩展性，将Command集中到单独的类中
-     */
-    void registerCommands() {
-        Stream.of(getClass().getMethods())
-                .filter(checkReturnTypeCommand(Command.class))
-                .map(invokeCommand(this))
-                .forEach(command -> commands.put(command.getName(), command));
+
+    protected Map<Class<? extends Annotation>, Set<Method>> registerCommandsByAnnotation() {
+        String pkgName = Const.COMMAND_SCAN_PKG;
+        Set<Class<?>> classes = AnnotationUtil.scanClasses(pkgName, AnnotationUtil.getPkgPath(pkgName), true);
+        return AnnotationUtil.scanMethodsByAnnotations(classes, Collections.singletonList(NormalCommand.class));
     }
 
     /**
@@ -161,13 +175,7 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
         };
     }
 
-    /**
-     * @param clazz 待筛选的类
-     * @return 如果clazz是method返回值的父类，返回true
-     */
-    public Predicate<Method> checkReturnTypeCommand(Class<?> clazz) {
-        return method -> clazz.isAssignableFrom(method.getReturnType());
-    }
+
 
 
 }

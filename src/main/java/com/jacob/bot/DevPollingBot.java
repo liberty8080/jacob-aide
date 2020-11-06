@@ -7,6 +7,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.meta.generics.LongPollingBot;
 import org.telegram.telegrambots.util.WebhookUtils;
 
+/**
+ * @author Administrator
+ */
 @Component
 public class DevPollingBot extends BaseAssistantBot implements LongPollingBot {
 
@@ -24,10 +27,12 @@ public class DevPollingBot extends BaseAssistantBot implements LongPollingBot {
         super.onUpdateReceived(update);
     }
 
+    @Override
     public String getBotUsername() {
         return name;
     }
 
+    @Override
     public String getBotToken() {
         return token;
     }
@@ -36,6 +41,7 @@ public class DevPollingBot extends BaseAssistantBot implements LongPollingBot {
     public void clearWebhook() throws TelegramApiRequestException {
         WebhookUtils.clearWebhook(this);
     }
+
 
 
 }

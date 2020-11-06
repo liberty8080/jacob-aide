@@ -14,10 +14,11 @@ public class BotConfig {
 
     private String name;
 
-    private proxy proxy;
+    private Proxy proxy;
 
     @Data
-    public static class proxy {
+
+    public static class Proxy {
         private DefaultBotOptions.ProxyType type;
         private String host;
         private Integer port;

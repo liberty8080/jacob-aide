@@ -31,7 +31,7 @@ class BaseAssistantBotTest {
         config = new BotConfig();
         config.setToken("1");
         config.setName("name");
-        BotConfig.proxy proxy = new BotConfig.proxy();
+        BotConfig.Proxy proxy = new BotConfig.Proxy();
         proxy.setHost("127.0.0.1");
         proxy.setPort(10808);
         proxy.setType(DefaultBotOptions.ProxyType.SOCKS5);
@@ -60,10 +60,10 @@ class BaseAssistantBotTest {
 
     }
 
-    @Test
+/*    @Test
     void initCommandTest(){
         bot.registerCommands();
-    }
+    }*/
 
 
 }
