@@ -102,7 +102,7 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
                                     silent.send((String)method.invoke(obj, messageCtx), messageCtx.getChatId());
                                 } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
                                     log.error("命令调用失败! class:{}, method:{},command:{}", method.getDeclaringClass().getSimpleName(),
-                                            method.getName(), receivedMsg);
+                                            method.getName(), receivedMsg,e);
                                 }
                             });
                     ctx.setCmd(command);

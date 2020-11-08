@@ -2,22 +2,29 @@ package com.jacob.bot.commands;
 
 import com.jacob.bot.annotation.NormalCommand;
 import com.jacob.bot.entities.MessageCtx;
+import com.jacob.common.service.impl.DdnsLogServiceImpl;
 import com.jacob.common.util.IPUtil;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static com.jacob.common.util.HttpClientUtil.get;
 
 /**
  * @author jacob
  */
+@Component
 public class SimpleCommand {
     private static final Logger log = LoggerFactory.getLogger(SimpleCommand.class);
+
+//    private DdnsLogServiceImpl ddnsLogService;
+
+/*    @Autowired
+    SimpleCommand(DdnsLogServiceImpl ddnsLogService){
+        this.ddnsLogService = ddnsLogService;
+    }*/
 
     /**
      * @param ctx messageCtx
@@ -38,6 +45,16 @@ public class SimpleCommand {
             return "ip获取失败!";
         }
     }
+
+    /*@NormalCommand(name = "ddns", description = "更新ddns")
+    public String ddns(MessageCtx ctx) {
+        try {
+            return ddnsLogService.updateddns();
+
+        } catch (IOException e) {
+            return "ddns更新失败!";
+        }
+    }*/
 
 
 }
