@@ -1,4 +1,4 @@
-package com.jacob.common;
+package com.jacob.common.service;
 
 import org.apache.http.HttpResponse;
 

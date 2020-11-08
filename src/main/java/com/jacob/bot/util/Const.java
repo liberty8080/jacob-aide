@@ -15,6 +15,7 @@ public class Const {
 
     public static final String COMMAND_SCAN_PKG = "com.jacob.bot.commands";
     public static final String COMMAND_FLAG = "/";
+    public static final String DDNS_GROUP = "dynu";
 
 
 }

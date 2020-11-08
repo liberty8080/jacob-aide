@@ -39,6 +39,16 @@ dependencies {
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
     // https://mvnrepository.com/artifact/com.alibaba/fastjson
     compile group: 'com.alibaba', name: 'fastjson', version: '1.2.75'
+    //mybatis-plus
+    compile group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.4.0'
+    // https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-generator
+    compile group: 'com.baomidou', name: 'mybatis-plus-generator', version: '3.4.0'
+    // https://mvnrepository.com/artifact/mysql/mysql-connector-java
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
+    // https://mvnrepository.com/artifact/org.freemarker/freemarker
+    compile group: 'org.freemarker', name: 'freemarker', version: '2.3.30'
+
+
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

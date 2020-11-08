@@ -1,7 +1,10 @@
 spring:
   profiles:
     active: dev
-
+  datasource:
+    url: jdbc:mysql://192.168.98.12:3306/jacob-aide?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: aide
+    password: jacob-aide
 jasypt:
   encryptor:
     algorithm: PBEWithMD5AndDES

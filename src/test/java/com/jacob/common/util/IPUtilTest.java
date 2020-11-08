@@ -13,9 +13,5 @@ class IPUtilTest {
         System.out.println(IPUtil.getPublicIP());
     }
 
-    @Test
-    void updateDDNS() throws IOException {
 
-        assertTrue(        IPUtil.updateDDNS("hostname",IPUtil.getPublicIP(),"username","password")        );
-    }
 }

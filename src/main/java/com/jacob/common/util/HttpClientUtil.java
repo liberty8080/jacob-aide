@@ -1,8 +1,7 @@
 package com.jacob.common.util;
 
-import com.jacob.common.CallBack;
+import com.jacob.common.service.CallBack;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;

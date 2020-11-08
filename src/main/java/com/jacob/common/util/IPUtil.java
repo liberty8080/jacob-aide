@@ -4,12 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.jacob.common.util.HttpClientUtil.get;
-import static java.text.MessageFormat.*;
+import static java.text.MessageFormat.format;
 
 @Slf4j
 public class IPUtil {
@@ -25,8 +24,7 @@ public class IPUtil {
         }
     }
 
-    public static Boolean updateDDNS(String hostname, String ip, String username, String password) {
-        log.info("检测公网ip地址中...");
+    public static String updateDDNS(String hostname,String ip, String username, String password) {
         try {
             if (ip != null) {
                 String url = format("https://api.dynu.com/nic/update?hostname={0}&myip={1}&username={2}&password={3}",
@@ -35,18 +33,14 @@ public class IPUtil {
                         username,
                         password);
 
-                var res = EntityUtils.toString(HttpClientUtil.get(url).getEntity());
-                if (res.equals("nochg") || res.equals("good")) {
-                    log.info("ddns更新成功! {}", res);
-                } else {
-                    log.error("ddns更新失败! {}", res);
-                }
-            } else {
-                log.error("ip获取失败!");
+                return EntityUtils.toString(HttpClientUtil.get(url).getEntity());
+
+            }else {
+                return null;
             }
         } catch (IOException e) {
             log.error("获取ip失败!");
+            return null;
         }
-        return true;
     }
 }
