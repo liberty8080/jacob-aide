@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.telegram.abilitybots.api.sender.DefaultSender;
 import org.telegram.abilitybots.api.sender.MessageSender;
@@ -51,6 +53,9 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
     @Setter
     private SilentSender silent;
 
+    @Autowired
+    ApplicationContext context;
+
 
     /**
      * @param botToken    bot密钥
@@ -63,7 +68,6 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
         this.botUsername = botUsername;
         sender = new DefaultSender(this);
         silent = new SilentSender(sender);
-//        registerCommands();
     }
 
 
@@ -98,9 +102,10 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
                             messageCtx -> {
                                 try {
                                     //通过反射调用方法,拿取返回的信息,发送给用户
-                                    Object obj = method.getDeclaringClass().getConstructor().newInstance();
+//                                    Object obj = method.getDeclaringClass().getConstructor().newInstance();
+                                    Object obj = context.getBean(method.getDeclaringClass());
                                     silent.send((String)method.invoke(obj, messageCtx), messageCtx.getChatId());
-                                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
+                                } catch (IllegalAccessException | InvocationTargetException e) {
                                     log.error("命令调用失败! class:{}, method:{},command:{}", method.getDeclaringClass().getSimpleName(),
                                             method.getName(), receivedMsg,e);
                                 }

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 
 /**
@@ -19,12 +20,19 @@ import java.io.IOException;
 public class SimpleCommand {
     private static final Logger log = LoggerFactory.getLogger(SimpleCommand.class);
 
-//    private DdnsLogServiceImpl ddnsLogService;
+    private DdnsLogServiceImpl ddnsLogService;
 
-/*    @Autowired
+    public static SimpleCommand command;
+
+    @PostConstruct
+    public void init(){
+        command = this;
+    }
+
+    @Autowired
     SimpleCommand(DdnsLogServiceImpl ddnsLogService){
         this.ddnsLogService = ddnsLogService;
-    }*/
+    }
 
     /**
      * @param ctx messageCtx
@@ -46,7 +54,7 @@ public class SimpleCommand {
         }
     }
 
-    /*@NormalCommand(name = "ddns", description = "更新ddns")
+    @NormalCommand(name = "ddns", description = "更新ddns")
     public String ddns(MessageCtx ctx) {
         try {
             return ddnsLogService.updateddns();
@@ -54,7 +62,7 @@ public class SimpleCommand {
         } catch (IOException e) {
             return "ddns更新失败!";
         }
-    }*/
+    }
 
 
 }
