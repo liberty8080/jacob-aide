@@ -1,8 +1,8 @@
 package com.jacob.bot.entities;
 
 import lombok.Data;
-import org.apache.catalina.User;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 @Data
 public class MessageCtx {

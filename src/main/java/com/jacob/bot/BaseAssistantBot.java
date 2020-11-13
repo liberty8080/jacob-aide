@@ -1,6 +1,7 @@
 package com.jacob.bot;
 
 import com.jacob.bot.annotation.NormalCommand;
+import com.jacob.bot.config.BotConfig;
 import com.jacob.bot.entities.Command;
 import com.jacob.bot.entities.MessageCtx;
 import com.jacob.bot.util.AnnotationUtil;
@@ -57,6 +58,9 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
     ApplicationContext context;
 
 
+    BaseAssistantBot(BotConfig config){
+        this(config.getToken(),config.getName(),config.getOption());
+    }
     /**
      * @param botToken    bot密钥
      * @param botUsername bot 用户名
@@ -75,7 +79,7 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
      * @param update 处理子类传过来的update
      */
     public void onUpdateReceived(Update update) {
-        // TODO: 2020/8/17 让机器人以回复的形式返回结果 
+        // TODO: 2020/8/17 让机器人以回复的形式返回结果
         Stream.of(update)
                 .filter(this::isCommand)
                 .map(this::getContext)
@@ -87,8 +91,8 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
     }
 
     private MessageCtx getContext(Update update) {
-        // TODO: 2020/8/16 用户信息,参数待完善
-        return new MessageCtx(null, update.getMessage().getChatId(), update, null);
+        // TODO: 2020/11/09 参数待完善
+        return new MessageCtx(update.getMessage().getFrom(), update.getMessage().getChatId(), update, null);
     }
 
     public MessageCtx matchCommand(MessageCtx ctx) {
@@ -102,9 +106,9 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
                             messageCtx -> {
                                 try {
                                     //通过反射调用方法,拿取返回的信息,发送给用户
-//                                    Object obj = method.getDeclaringClass().getConstructor().newInstance();
                                     Object obj = context.getBean(method.getDeclaringClass());
                                     silent.send((String)method.invoke(obj, messageCtx), messageCtx.getChatId());
+                                    log.info("\n用户: {} id:{} \n命令: {}",ctx.getUser().getUserName(),ctx.getUser().getId(),name);
                                 } catch (IllegalAccessException | InvocationTargetException e) {
                                     log.error("命令调用失败! class:{}, method:{},command:{}", method.getDeclaringClass().getSimpleName(),
                                             method.getName(), receivedMsg,e);

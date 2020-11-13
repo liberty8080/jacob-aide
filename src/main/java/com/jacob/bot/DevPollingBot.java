@@ -11,15 +11,18 @@ import org.telegram.telegrambots.util.WebhookUtils;
  * @author Administrator
  */
 @Component
-public class DevPollingBot extends BaseAssistantBot implements LongPollingBot {
+public class DevPollingBot extends BaseAssistantBot implements LongPollingBot {/*
 
     private final String name;
-    private final String token;
+    private final String token;*/
+    private final BotConfig config;
 
     public DevPollingBot(BotConfig config) {
-        super(config.getToken(), config.getName(), config.getOption());
+    /*    super(config.getToken(), config.getName(), config.getOption());
         name = config.getName();
-        token = config.getToken();
+        token = config.getToken();*/
+        super(config);
+        this.config = config;
     }
 
     @Override
@@ -29,19 +32,18 @@ public class DevPollingBot extends BaseAssistantBot implements LongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return name;
+        return config.getName();
     }
 
     @Override
     public String getBotToken() {
-        return token;
+        return config.getToken();
     }
 
     @Override
     public void clearWebhook() throws TelegramApiRequestException {
         WebhookUtils.clearWebhook(this);
     }
-
 
 
 }
