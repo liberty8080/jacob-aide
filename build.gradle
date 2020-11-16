@@ -17,20 +17,20 @@ plugins {
 
 /*jar {
 *//*    manifestContentCharset 'utf-8'
-    metadataCharset 'utf-8'
-    enabled=true*//*
+    metadataCharset 'utf-8'*//*
+    enabled=true
     manifest {
         attributes 'Main-Class': 'com.jacob.JacobAideApplication'
     }
 
-   *//* from {
+    from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }*//*
+    }
 }*/
 
 
 group = 'com.jacob'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.2-SNAPSHOT'
 sourceCompatibility = '11'
 
 
