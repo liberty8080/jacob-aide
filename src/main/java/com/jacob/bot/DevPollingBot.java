@@ -1,6 +1,7 @@
 package com.jacob.bot;
 
 import com.jacob.bot.config.BotConfig;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
@@ -11,16 +12,12 @@ import org.telegram.telegrambots.util.WebhookUtils;
  * @author Administrator
  */
 @Component
-public class DevPollingBot extends BaseAssistantBot implements LongPollingBot {/*
+//@ConditionalOnProperty(prefix = "spring.profile",name = "active",havingValue = "dev")
+public class DevPollingBot extends BaseAssistantBot implements LongPollingBot {
 
-    private final String name;
-    private final String token;*/
     private final BotConfig config;
 
     public DevPollingBot(BotConfig config) {
-    /*    super(config.getToken(), config.getName(), config.getOption());
-        name = config.getName();
-        token = config.getToken();*/
         super(config);
         this.config = config;
     }

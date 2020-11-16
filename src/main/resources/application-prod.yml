@@ -1,6 +1,14 @@
 telegram:
   bot:
-    token: ENC(W77kbIMUa+XwRCF9Ud+IKDzTkbNMqJoGP631TYcoQ+5M+wiZk/EGekYuevaGJRa9IQWFveleAO8=)
+    token: ENC(aodn+RjSDgSTUAdMQj44Rek15QKRJ4aTmgGxZub3nj9XI6bDVVyiOFrD1iulfPA1W1aCTXbA56w=)
     name: ENC(kQfyQx23nwQmcx8txEyZtQa6dK8bI/ww9fz1JFdgH10=)
-    webhook:
+    proxy:
+      type: SOCKS5
+      host: 192.168.98.1
+      port: 10808
+
+
+logging:
+  level:
+    root: INFO
 
