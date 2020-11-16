@@ -8,9 +8,9 @@ import java.lang.annotation.Target;
 /**
  * @author jacob
  */
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Command {
+public @interface Commands {
 
 
 }

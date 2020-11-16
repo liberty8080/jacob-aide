@@ -1,5 +1,6 @@
 package com.jacob.bot.commands;
 
+import com.jacob.bot.annotation.Commands;
 import com.jacob.bot.annotation.NormalCommand;
 import com.jacob.bot.entities.MessageCtx;
 import com.jacob.common.service.impl.DdnsLogServiceImpl;
@@ -17,10 +18,11 @@ import java.io.IOException;
  * @author jacob
  */
 @Component
+@Commands
 public class SimpleCommand {
     private static final Logger log = LoggerFactory.getLogger(SimpleCommand.class);
 
-    private DdnsLogServiceImpl ddnsLogService;
+    private final DdnsLogServiceImpl ddnsLogService;
 
     public static SimpleCommand command;
 

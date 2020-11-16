@@ -1,7 +1,6 @@
 package com.jacob.bot;
 
 import com.jacob.bot.annotation.NormalCommand;
-import com.jacob.bot.util.AnnotationUtil;
 import org.junit.jupiter.api.Test;
 
 import java.lang.annotation.Annotation;

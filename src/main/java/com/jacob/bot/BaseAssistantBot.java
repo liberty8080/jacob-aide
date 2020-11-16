@@ -1,18 +1,18 @@
 package com.jacob.bot;
 
+import com.jacob.bot.annotation.Commands;
 import com.jacob.bot.annotation.NormalCommand;
 import com.jacob.bot.config.BotConfig;
 import com.jacob.bot.entities.Command;
 import com.jacob.bot.entities.MessageCtx;
-import com.jacob.bot.util.AnnotationUtil;
-import com.jacob.bot.util.Const;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 import org.telegram.abilitybots.api.sender.DefaultSender;
 import org.telegram.abilitybots.api.sender.MessageSender;
 import org.telegram.abilitybots.api.sender.SilentSender;
@@ -20,26 +20,26 @@ import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static com.jacob.bot.entities.Command.builder;
 import static com.jacob.bot.util.Const.COMMAND_FLAG;
 
 /**
  * 机器人基类，两个子类用于根据配置切换longPolling与webhook模式
+ * @author zhao
  */
 @Component
 @Slf4j
 public abstract class BaseAssistantBot extends DefaultAbsSender {
+
+    @Autowired
+    ApplicationContext context;
 
     @Getter
     private final String botToken;
@@ -48,19 +48,17 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
     /**
      * 反射获得命令
      */
-    private final Map<Class<? extends Annotation>, Set<Method>> commandsMap = registerCommandsByAnnotation();
+    private Set<Method> commands = new HashSet<>();
     @Setter
     private MessageSender sender;
     @Setter
     private SilentSender silent;
 
-    @Autowired
-    ApplicationContext context;
 
-
-    BaseAssistantBot(BotConfig config){
-        this(config.getToken(),config.getName(),config.getOption());
+    BaseAssistantBot(BotConfig config) {
+        this(config.getToken(), config.getName(), config.getOption());
     }
+
     /**
      * @param botToken    bot密钥
      * @param botUsername bot 用户名
@@ -79,6 +77,9 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
      * @param update 处理子类传过来的update
      */
     public void onUpdateReceived(Update update) {
+        if(commands.size()==0){
+            commands = registerCommandsByAnnotation();
+        }
         // TODO: 2020/8/17 让机器人以回复的形式返回结果
         Stream.of(update)
                 .filter(this::isCommand)
@@ -97,7 +98,7 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
 
     public MessageCtx matchCommand(MessageCtx ctx) {
         var receivedMsg = ctx.getUpdate().getMessage().getText().substring(1);
-        for (Method method : commandsMap.get(NormalCommand.class)) {
+        for (Method method : commands) {
             String name = method.getAnnotation(NormalCommand.class).name();
             if (receivedMsg.equals(name)) {
                 String desc = method.getAnnotation(NormalCommand.class).description();
@@ -107,11 +108,11 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
                                 try {
                                     //通过反射调用方法,拿取返回的信息,发送给用户
                                     Object obj = context.getBean(method.getDeclaringClass());
-                                    silent.send((String)method.invoke(obj, messageCtx), messageCtx.getChatId());
-                                    log.info("\n用户: {} id:{} \n命令: {}",ctx.getUser().getUserName(),ctx.getUser().getId(),name);
+                                    silent.send((String) method.invoke(obj, messageCtx), messageCtx.getChatId());
+                                    log.info("\n用户: {} id:{} \n命令: {}", ctx.getUser().getUserName(), ctx.getUser().getId(), name);
                                 } catch (IllegalAccessException | InvocationTargetException e) {
                                     log.error("命令调用失败! class:{}, method:{},command:{}", method.getDeclaringClass().getSimpleName(),
-                                            method.getName(), receivedMsg,e);
+                                            method.getName(), receivedMsg, e);
                                 }
                             });
                     ctx.setCmd(command);
@@ -157,12 +158,19 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
     }
 
 
+    protected Set<Method> registerCommandsByAnnotation() {
+        final Map<String, Object> beansWithAnnotation = context.getBeansWithAnnotation(Commands.class);
 
-
-    protected Map<Class<? extends Annotation>, Set<Method>> registerCommandsByAnnotation() {
-        String pkgName = Const.COMMAND_SCAN_PKG;
-        Set<Class<?>> classes = AnnotationUtil.scanClasses(pkgName, AnnotationUtil.getPkgPath(pkgName), true);
-        return AnnotationUtil.scanMethodsByAnnotations(classes, Collections.singletonList(NormalCommand.class));
+        Set<Method> methods = new HashSet<>();
+        for (String key : beansWithAnnotation.keySet()) {
+            Method[] me = ReflectionUtils.getDeclaredMethods(AopUtils.getTargetClass(beansWithAnnotation.get(key)));
+            for (Method method : me) {
+                if(method.isAnnotationPresent(NormalCommand.class)){
+                    methods.add(method);
+                }
+            }
+        }
+        return methods;
     }
 
     /**
@@ -183,8 +191,6 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
 
         };
     }
-
-
 
 
 }

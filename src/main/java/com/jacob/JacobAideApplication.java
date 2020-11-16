@@ -6,6 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.telegram.telegrambots.ApiContextInitializer;
 
+/**
+ * @author zhao
+ */
 @SpringBootApplication
 @EnableScheduling
 @MapperScan("com.jacob.common.mapper")
