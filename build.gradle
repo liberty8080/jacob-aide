@@ -6,6 +6,8 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.3.RELEASE")
+        classpath 'gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.20.0'
+
     }
 }
 
@@ -13,6 +15,7 @@ plugins {
     id 'org.springframework.boot' version '2.3.3.RELEASE'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
+    id 'idea'
 }
 
 /*jar {
@@ -32,6 +35,10 @@ plugins {
 group = 'com.jacob'
 version = '0.0.2-SNAPSHOT'
 sourceCompatibility = '11'
+
+
+//docker 插件
+apply plugin: 'com.palantir.docker'
 
 
 configurations {
@@ -78,6 +85,20 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+}
+
+bootJar {
+    project.group = 'com.jacob'
+    baseName = 'jacob-aide'
+    version = '0.0.2-SNAPSHOT'
+}
+
+docker {
+//    dependsOn build
+    name "${bootJar.project.group}/${bootJar.baseName}"
+    files bootJar.archivePath
+    buildArgs(['JAR_FILE': "${bootJar.archiveName}"])
+//    定义供Dockerfile使用的变量 JAR_FILE
 }
 
 
