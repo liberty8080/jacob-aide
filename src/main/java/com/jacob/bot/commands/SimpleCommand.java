@@ -1,5 +1,6 @@
 package com.jacob.bot.commands;
 
+import com.jacob.bot.BaseAssistantBot;
 import com.jacob.bot.annotation.Commands;
 import com.jacob.bot.annotation.NormalCommand;
 import com.jacob.bot.entities.MessageCtx;
@@ -65,6 +66,14 @@ public class SimpleCommand {
             return "ddns更新失败!";
         }
     }
+
+    @NormalCommand(name = "help",description = "使用帮助")
+    public String help(MessageCtx ctx){
+
+        return BaseAssistantBot.HELP_INFO.toString();
+    }
+
+
 
 
 

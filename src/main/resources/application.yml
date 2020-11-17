@@ -1,12 +1,16 @@
 spring:
   profiles:
-    active: prod
+    active: dev
   datasource:
     url: jdbc:mysql://192.168.98.1:3306/jacob-aide?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: aide
     password: jacob-aide
+
+
 jasypt:
   encryptor:
     algorithm: PBEWithMD5AndDES
     password: assistant
     iv-generator-classname: org.jasypt.iv.NoIvGenerator
+server:
+  port: 9000

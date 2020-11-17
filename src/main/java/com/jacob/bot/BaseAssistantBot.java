@@ -54,6 +54,8 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
     @Setter
     private SilentSender silent;
 
+    public static  StringBuilder HELP_INFO = null;
+
 
     BaseAssistantBot(BotConfig config) {
         this(config.getToken(), config.getName(), config.getOption());
@@ -160,13 +162,20 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
 
     protected Set<Method> registerCommandsByAnnotation() {
         final Map<String, Object> beansWithAnnotation = context.getBeansWithAnnotation(Commands.class);
-
+        StringBuilder helpInfoBuilder = new StringBuilder();
         Set<Method> methods = new HashSet<>();
         for (String key : beansWithAnnotation.keySet()) {
             Method[] me = ReflectionUtils.getDeclaredMethods(AopUtils.getTargetClass(beansWithAnnotation.get(key)));
             for (Method method : me) {
                 if(method.isAnnotationPresent(NormalCommand.class)){
                     methods.add(method);
+                    NormalCommand annotation = method.getAnnotation(NormalCommand.class);
+                    helpInfoBuilder.append("/");
+                    helpInfoBuilder.append(annotation.name());
+                    helpInfoBuilder.append(":");
+                    helpInfoBuilder.append(annotation.description());
+                    helpInfoBuilder.append("\n");
+                    HELP_INFO = helpInfoBuilder;
                 }
             }
         }
