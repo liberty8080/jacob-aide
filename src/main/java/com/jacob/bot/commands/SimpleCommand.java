@@ -4,16 +4,20 @@ import com.jacob.bot.BaseAssistantBot;
 import com.jacob.bot.annotation.Commands;
 import com.jacob.bot.annotation.NormalCommand;
 import com.jacob.bot.entities.MessageCtx;
+import com.jacob.bot.util.MessageSendService;
 import com.jacob.common.service.impl.DdnsLogServiceImpl;
+import com.jacob.common.service.impl.V2SubscribeService;
 import com.jacob.common.util.IPUtil;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Message;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.text.MessageFormat;
 
 /**
  * @author jacob
@@ -22,19 +26,21 @@ import java.io.IOException;
 @Commands
 public class SimpleCommand {
     private static final Logger log = LoggerFactory.getLogger(SimpleCommand.class);
-
-    private final DdnsLogServiceImpl ddnsLogService;
-
     public static SimpleCommand command;
-
-    @PostConstruct
-    public void init(){
-        command = this;
-    }
+    private final DdnsLogServiceImpl ddnsLogService;
+    @Autowired
+    public MessageSendService messageSendService;
+    @Autowired
+    private V2SubscribeService v2Service;
 
     @Autowired
-    SimpleCommand(DdnsLogServiceImpl ddnsLogService){
+    SimpleCommand(DdnsLogServiceImpl ddnsLogService) {
         this.ddnsLogService = ddnsLogService;
+    }
+
+    @PostConstruct
+    public void init() {
+        command = this;
     }
 
     /**
@@ -67,10 +73,24 @@ public class SimpleCommand {
         }
     }
 
-    @NormalCommand(name = "help",description = "使用帮助")
-    public String help(MessageCtx ctx){
+    @NormalCommand(name = "help", description = "使用帮助")
+    public String help(MessageCtx ctx) {
 
         return BaseAssistantBot.HELP_INFO.toString();
+    }
+
+    @NormalCommand(name="expire",description = "过期时间检测")
+    public String expire(MessageCtx ctx){
+        String message ;
+        try {
+            int expireDays = v2Service.getExpireDays();
+            message = MessageFormat.format("还有{0}天就过期辣", expireDays);
+            return message;
+        } catch (IOException e) {
+            message  = "v2信息获取错误";
+            log.error(message,e);
+            return message;
+        }
     }
 
 

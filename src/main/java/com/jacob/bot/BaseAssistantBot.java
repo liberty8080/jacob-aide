@@ -50,9 +50,9 @@ public abstract class BaseAssistantBot extends DefaultAbsSender {
      */
     private Set<Method> commands = new HashSet<>();
     @Setter
-    private MessageSender sender;
+    protected MessageSender sender;
     @Setter
-    private SilentSender silent;
+    public SilentSender silent;
 
     public static  StringBuilder HELP_INFO = null;
 
