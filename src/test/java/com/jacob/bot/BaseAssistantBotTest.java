@@ -3,6 +3,8 @@ package com.jacob.bot;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jacob.bot.config.BotConfig;
+import com.jacob.bot.core.BaseAssistantBot;
+import com.jacob.bot.core.DevPollingBot;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,6 @@
 package com.jacob.bot.util;
 
-import com.jacob.bot.DevPollingBot;
+import com.jacob.bot.core.DevPollingBot;
 import com.jacob.common.service.impl.ConfigsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package com.jacob.bot.commands;
 
-import com.jacob.bot.BaseAssistantBot;
+import com.jacob.bot.core.BaseAssistantBot;
 import com.jacob.bot.annotation.Commands;
 import com.jacob.bot.annotation.NormalCommand;
 import com.jacob.bot.entities.MessageCtx;
@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.Message;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;

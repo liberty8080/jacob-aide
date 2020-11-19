@@ -1,4 +1,4 @@
-package com.jacob.bot;
+package com.jacob.bot.core;
 
 import com.jacob.bot.annotation.Commands;
 import com.jacob.bot.annotation.NormalCommand;

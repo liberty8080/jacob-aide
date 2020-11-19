@@ -1,7 +1,6 @@
-package com.jacob.bot;
+package com.jacob.bot.core;
 
 import com.jacob.bot.config.BotConfig;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;

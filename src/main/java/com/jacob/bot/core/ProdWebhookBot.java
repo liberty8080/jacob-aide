@@ -1,18 +1,13 @@
-package com.jacob.bot;
+package com.jacob.bot.core;
 
 import com.jacob.bot.config.BotConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.bots.DefaultBotOptions;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.meta.generics.LongPollingBot;
-import org.telegram.telegrambots.meta.generics.WebhookBot;
 import org.telegram.telegrambots.util.WebhookUtils;
-
-import java.util.List;
 
 @Component
 @ConditionalOnProperty(prefix = "spring.profile",name = "active",havingValue = "prod")
