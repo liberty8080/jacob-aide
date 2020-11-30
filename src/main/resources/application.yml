@@ -14,3 +14,11 @@ jasypt:
     iv-generator-classname: org.jasypt.iv.NoIvGenerator
 server:
   port: 9000
+
+logging:
+  level:
+    o:
+      t:
+        t:
+          u:
+            DefaultBotSession: fatal
